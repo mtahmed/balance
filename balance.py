@@ -272,7 +272,7 @@ def print_body_foot():
 
 
 if __name__ == '__main__':
-    if username not in get_all_users() and username != 'mtahmed':
+    if username not in get_all_users() and username not in settings.admin_users:
         print "Permission denied for user: %s" % username
         sys.exit(0)
     params = cgi.FieldStorage()

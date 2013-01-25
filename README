@@ -1,0 +1,16 @@
+--[ How to deploy
+1. Fill in the right settings for the database
+   connection in the settings.py file. Alternatively,
+   one could use a SQLite database and change the
+   connection creation and script exit functions to
+   connect to the SQLite database and to commit before exit.
+2. Change the server's config file to use some authentication
+   or pass the username in some other way  to the script.
+3. Set the "admin" user in the settings.py file.
+
+
+--[ Usage
+To start off, login as "admin" and add users to the system
+by issuing the command `add user1 user2 user3`.
+
+Other usage examples are given on the webpage itself.
