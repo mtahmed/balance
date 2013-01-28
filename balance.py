@@ -340,10 +340,8 @@ if __name__ == '__main__':
             from_list = command_split[:owes_index]
         to_list = command_split[owes_index + 1:len(command_split) - 1]
         # The user could be using prefixes of names; in that case, determine the actual name.
-        for index, from_user in enumerate(from_list):
-            from_list[index] = resolve_prefix(from_user)
-        for index, to_user in enumerate(to_list):
-            to_list[index] = resolve_prefix(to_user)
+        from_list = [resolve_prefix(prefix) for prefix in from_list]
+        to_list = [resolve_prefix(prefix) for prefix in from_list]
 
         amount_str = command_split[-1]
         for person1 in from_list:
