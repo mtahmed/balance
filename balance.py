@@ -341,7 +341,7 @@ if __name__ == '__main__':
         to_list = command_split[owes_index + 1:len(command_split) - 1]
         # The user could be using prefixes of names; in that case, determine the actual name.
         from_list = [resolve_prefix(prefix) for prefix in from_list]
-        to_list = [resolve_prefix(prefix) for prefix in from_list]
+        to_list = [resolve_prefix(prefix) for prefix in to_list]
 
         amount_str = command_split[-1]
         for person1 in from_list:
