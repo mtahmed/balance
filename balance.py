@@ -26,9 +26,10 @@ cursor = conn.cursor()
 
 def log(entry):
     '''
-    Add the user with name NAME to the database.
+    Log the entry for the current user.
     '''
-    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s)''', (username, entry))
+    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s)''',
+                   (username, entry))
 
 
 def add_user(name):
@@ -38,7 +39,8 @@ def add_user(name):
     users = get_all_users()
     if name in users:
         raise Exception("The user %s is already in the database." % name)
-    cursor.execute('''INSERT INTO users VALUES (%s)''', (name,))
+    cursor.execute('''INSERT INTO users VALUES (%s)''',
+                   (name,))
     for user in users:
         create_new_balance(name, user)
     return
@@ -53,12 +55,36 @@ def get_all_users():
     return [row[0] for row in rows]
 
 
+def resolve_prefix(prefix):
+    '''
+    Get the actual username for PREFIX of the username.
+    '''
+    users = get_all_users()
+    # If the prefix is equal to some username...
+    if prefix in users:
+        return prefix
+    matches = []
+    pattern = re.compile(prefix)
+    for user in users:
+        if pattern.match(user):
+            matches.append(user)
+    if len(matches) > 1:
+        print "error: ambigious name: %s" % from_user
+        exit(0)
+    elif len(matches) == 0:
+        print "error: no matches for name: %s" % from_user
+        exit(0)
+    else:
+        return matches[0]
+
 def create_new_balance(person1, person2):
     '''
     Create an empty record for PERSON1 to PERSON2 and the other way.
     '''
-    cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''', (person1, person2, 0))
-    cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''', (person2, person1, 0))
+    cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''',
+                   (person1, person2, 0))
+    cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''',
+                   (person2, person1, 0))
     return
 
 
@@ -66,7 +92,8 @@ def get_balance(person1, person2):
     '''
     Get the amount PERSON1 owes PERSON2.
     '''
-    cursor.execute('''SELECT amount FROM balance WHERE person1=%s AND person2=%s''', (person1, person2))
+    cursor.execute('''SELECT amount FROM balance WHERE person1=%s AND person2=%s''',
+                   (person1, person2))
     return cursor.fetchone()[0]
 
 
@@ -78,19 +105,20 @@ def update_balance(person1, person2, amount_str):
         amount = 0
     else:
         amount = float(amount_str)
+
     if amount_str[0] in ('+', '-'):
         person1_to_person2 = get_balance(person1, person2)
         if person1_to_person2 + amount > 0.0:
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                        (person1_to_person2 + amount, person1, person2))
+                           (person1_to_person2 + amount, person1, person2))
         else:
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                        (0.0, person1, person2))
+                           (0.0, person1, person2))
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                        (-1 * (person1_to_person2 + amount), person2, person1))
+                           (-1 * (person1_to_person2 + amount), person2, person1))
     else:
         cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                    (amount, person1, person2))
+                       (amount, person1, person2))
     
 
 def print_table():
@@ -281,25 +309,29 @@ if __name__ == '__main__':
         command_str = params['command'].value
 
     users = get_all_users()
-    
+
     for_index = command_str.find('for')
     if for_index == -1:
         command_split = command_str.split(' ')
     else:
         command_split = command_str[:for_index - 1].split(' ')
-    if command_split[0] == 'add':
-        add_list = command_split[1:]
-        for user in add_list:
-            add_user(user)
-        log(command_str)
-        print_table()
-    elif command_split[0] == '':
+
+    # If there's no command...
+    if command_split[0] == '':
         print_body_head()
         print_table()
         print_form()
         print_logs()
         print_examples()
         print_body_foot()
+    # If the command is add...
+    elif command_split[0] == 'add':
+        add_list = command_split[1:]
+        for user in add_list:
+            add_user(user)
+        log(command_str)
+        print_table()
+    # Otherwise, it must be update.
     else:
         owes_index = command_split.index('owes')
         if command_split[0] == 'all':
@@ -309,37 +341,9 @@ if __name__ == '__main__':
         to_list = command_split[owes_index + 1:len(command_split) - 1]
         # The user could be using prefixes of names; in that case, determine the actual name.
         for index, from_user in enumerate(from_list):
-            if from_user in users:
-                continue
-            matches = []
-            pattern = re.compile(from_user)
-            for user in users:
-                if pattern.match(user):
-                    matches.append(user)
-            if len(matches) > 1:
-                print "error: mbigious name: %s" % from_user
-                exit(0)
-            elif len(matches) == 0:
-                print "error: no matches for name: %s" % from_user
-                exit(0)
-            else:
-                from_list[index] = matches[0]
+            from_list[index] = resolve_prefix(from_user)
         for index, to_user in enumerate(to_list):
-            if to_user in users:
-                continue
-            matches = []
-            pattern = re.compile(to_user)
-            for user in users:
-                if pattern.match(user):
-                    matches.append(user)
-            if len(matches) > 1:
-                print "error: mbigious name: %s" % to_user
-                exit(0)
-            elif len(matches) == 0:
-                print "error: no matches for name: %s" % to_user
-                exit(0)
-            else:
-                to_list[index] = matches[0]
+            to_list[index] = resolve_prefix(to_user)
 
         amount_str = command_split[-1]
         for person1 in from_list:
