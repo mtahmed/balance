@@ -124,7 +124,6 @@ def update_balance(person1, person2, amount_str):
 def print_table():
     users = get_all_users()
 
-    print """<h1>Balance</h1>"""
     print """<div id='balance-table' style='margin: 0px; padding: 0px;'>"""
     print """<table>"""
     print """<tr>"""
@@ -319,6 +318,7 @@ if __name__ == '__main__':
     # If there's no command...
     if command_split[0] == '':
         print_body_head()
+        print """<h1>Balance</h1>"""
         print_table()
         print_form()
         print_logs()
