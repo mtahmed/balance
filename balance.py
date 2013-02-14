@@ -24,12 +24,12 @@ conn = MySQLdb.connect(host = settings.database_hostname,
 cursor = conn.cursor()
 
 
-def log(from_user, to_user, amount):
+def log(from_user, to_user, for_message, amount):
     '''
     Log the entry for the current user.
     '''
-    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s, %s, %s)''',
-                   (username, from_user, to_user, amount))
+    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s, %s, %s, %s)''',
+                   (username, from_user, to_user, for_message, amount))
 
 
 def add_user(name):
@@ -162,14 +162,15 @@ def print_logs():
     logs = cursor.fetchall()
     print """<h1>Logs</h1>"""
     print """<table>"""
-    print """<tr><td>date</td><td>user</td><td>from</td><td>to</td><td>amount</td></tr>"""
+    print """<tr><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td>amount</td></tr>"""
     for log in logs:
         print """<tr>"""
         print """<td>%s</td>""" % log[0]
         print """<td>%s</td>""" % log[1]
         print """<td>%s</td>""" % log[2]
         print """<td>%s</td>""" % log[3]
-        print """<td style='text-align: right;'>%s</td>""" % (("+" + str(log[4])) if log[4] > 0 else log[4])
+        print """<td>%s</td>""" % log[4]
+        print """<td style='text-align: right;'>%s</td>""" % (("+" + str(log[5])) if log[5] > 0 else log[5])
         print """</tr>"""
     print """</table>"""
     print """<br />"""
@@ -316,11 +317,13 @@ if __name__ == '__main__':
 
     users = get_all_users()
 
-    for_index = command_str.find('for')
+    for_index = command_str.find('for ')
+    for_message = ""
     if for_index == -1:
         command_split = command_str.split(' ')
     else:
         command_split = command_str[:for_index - 1].split(' ')
+        for_message = command_str[for_index+4:]
 
     # If there's no command...
     if command_split[0] == '':
@@ -353,5 +356,5 @@ if __name__ == '__main__':
         for person1 in from_list:
             for person2 in to_list:
                 update_balance(person1, person2, amount_str)
-                log(person1, person2, float(eval(amount_str)))
+                log(person1, person2, for_message, float(eval(amount_str)))
         print_table()
