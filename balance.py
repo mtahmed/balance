@@ -108,7 +108,7 @@ def update_balance(person1, person2, amount_str):
     if amount_str == 'none':
         amount = 0
     else:
-        amount = float(amount_str)
+        amount = float(eval(amount_str))
 
     if amount_str[0] in ('+', '-'):
         person1_to_person2 = get_balance(person1, person2)
@@ -353,5 +353,5 @@ if __name__ == '__main__':
         for person1 in from_list:
             for person2 in to_list:
                 update_balance(person1, person2, amount_str)
-                log(person1, person2, float(amount_str))
+                log(person1, person2, float(eval(amount_str)))
         print_table()
