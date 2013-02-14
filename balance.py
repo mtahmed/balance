@@ -24,12 +24,12 @@ conn = MySQLdb.connect(host = settings.database_hostname,
 cursor = conn.cursor()
 
 
-def log(entry):
+def log(from_user, to_user, amount):
     '''
     Log the entry for the current user.
     '''
-    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s)''',
-                   (username, entry))
+    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s, %s, %s)''',
+                   (username, from_user, to_user, amount))
 
 
 def add_user(name):
@@ -94,7 +94,11 @@ def get_balance(person1, person2):
     '''
     cursor.execute('''SELECT amount FROM balance WHERE person1=%s AND person2=%s''',
                    (person1, person2))
-    return cursor.fetchone()[0]
+    person1_to_person2 = cursor.fetchone()
+    if person1_to_person2 is None:
+        return None
+    else:
+        return person1_to_person2[0]
 
 
 def update_balance(person1, person2, amount_str):
@@ -108,6 +112,9 @@ def update_balance(person1, person2, amount_str):
 
     if amount_str[0] in ('+', '-'):
         person1_to_person2 = get_balance(person1, person2)
+        if person1_to_person2 is None:
+            create_new_balance(person1, person2)
+            person1_to_person2 = 0.0
         if person1_to_person2 + amount > 0.0:
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
                            (person1_to_person2 + amount, person1, person2))
@@ -155,12 +162,14 @@ def print_logs():
     logs = cursor.fetchall()
     print """<h1>Logs</h1>"""
     print """<table>"""
-    print """<tr><td>date</td><td>user</td><td>entry</td></tr>"""
+    print """<tr><td>date</td><td>user</td><td>from</td><td>to</td><td>amount</td></tr>"""
     for log in logs:
         print """<tr>"""
         print """<td>%s</td>""" % log[0]
         print """<td>%s</td>""" % log[1]
         print """<td>%s</td>""" % log[2]
+        print """<td>%s</td>""" % log[3]
+        print """<td style='text-align: right;'>%s</td>""" % (("+" + str(log[4])) if log[4] > 0 else log[4])
         print """</tr>"""
     print """</table>"""
     print """<br />"""
@@ -208,7 +217,6 @@ def print_examples():
         <code>szbokhar owes mtahmed none</code>
         <br />
         <br />
-        <!--
         The command line also accepts unambigious prefixes of usernames.
         <br />
         So all these are equivalent (for users: [mtahmed, szbokhar, my4li])
@@ -222,7 +230,6 @@ def print_examples():
         <code>sz owes mt 0</code>
         <br />
         <br />
-        -->
         The command line also accepts lists.
         <br />
         Everyone owes mtahmed +$2
@@ -329,7 +336,6 @@ if __name__ == '__main__':
         add_list = command_split[1:]
         for user in add_list:
             add_user(user)
-        log(command_str)
         print_table()
     # Otherwise, it must be update.
     else:
@@ -347,5 +353,5 @@ if __name__ == '__main__':
         for person1 in from_list:
             for person2 in to_list:
                 update_balance(person1, person2, amount_str)
-        log(command_str)
+                log(person1, person2, float(amount_str))
         print_table()
