@@ -286,7 +286,6 @@ def print_body_head():
     <body>
     """
     print "User: %s" % username
-    print "<a href='https://cas.uwaterloo.ca/cas/logout'>[Logout]</a>"
     print "<br />"
     print "<br />"
 
