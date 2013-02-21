@@ -267,6 +267,16 @@ def print_examples():
         <code>all owes mtahmed +10 for pizza</code>
         <br />
         <code>szbokhar owes mtahmed -10 for paid back</code>
+        <br />
+        <br />
+        The amount can be a mathematical expression WITHOUT any spaces:
+        <br />
+        So for example mtahmed pays $45 for pizza and there are 5 people
+        who ate the pizza:
+        <br />
+        <code>all owes mtahmed +(45/5) for pizza</code>
+        <br />
+        <code>a3 owes mtahmed +(14*3) for 3 months of internet</code>
     </div>
     """
     return
