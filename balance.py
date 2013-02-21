@@ -30,6 +30,7 @@ def log(from_user, to_user, for_message, amount):
     '''
     cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s, %s, %s, %s)''',
                    (username, from_user, to_user, for_message, amount))
+    return
 
 
 def add_user(name):
@@ -101,7 +102,7 @@ def get_balance(person1, person2):
         return person1_to_person2[0]
 
 
-def update_balance(person1, person2, amount_str):
+def update_balance(person1, person2, for_message, amount_str):
     '''
     Update the AMOUNT that PERSON1 owes PERSON2.
     '''
@@ -126,6 +127,9 @@ def update_balance(person1, person2, amount_str):
     else:
         cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
                        (amount, person1, person2))
+
+    log(person1, person2, for_message, amount)
+    return
     
 
 def print_table():
@@ -155,6 +159,7 @@ def print_table():
     
     print """</table>"""
     print """</div>"""
+    return
 
 
 def print_logs():
@@ -175,7 +180,7 @@ def print_logs():
     print """</table>"""
     print """<br />"""
     print """<br />"""
-    
+    return
 
 
 def print_form():
@@ -189,6 +194,7 @@ def print_form():
         <br />
         <br />
     """
+    return
 
 
 def print_examples():
@@ -250,6 +256,7 @@ def print_examples():
         <code>szbokhar owes mtahmed -10 for paid back</code>
     </div>
     """
+    return
 
 
 def print_body_head():
@@ -296,6 +303,7 @@ def print_body_head():
     print "User: %s" % username
     print "<br />"
     print "<br />"
+    return
 
 
 def print_body_foot():    
@@ -304,6 +312,7 @@ def print_body_foot():
 
     </html>
     """
+    return
 
 
 if __name__ == '__main__':
@@ -355,6 +364,5 @@ if __name__ == '__main__':
         amount_str = command_split[-1]
         for person1 in from_list:
             for person2 in to_list:
-                update_balance(person1, person2, amount_str)
-                log(person1, person2, for_message, float(eval(amount_str)))
+                update_balance(person1, person2, for_message, amount_str)
         print_table()
