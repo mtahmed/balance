@@ -168,15 +168,28 @@ def print_logs():
     print """<h1>Logs</h1>"""
     print """<table>"""
     print """<tr><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td>amount</td></tr>"""
+    prev_log = None
     for log in logs:
         print """<tr>"""
         print """<td>%s</td>""" % log[0]
-        print """<td>%s</td>""" % log[1]
+        # If the previous log had the same 'for' message and same amount,
+        # then don't print the user this time.
+        if prev_log is None:
+            print """<td>%s</td>""" % log[1]
+        elif (prev_log[4] == log[4] and
+              prev_log[5] == log[5]):
+            print """<td></td>"""
+        else:
+            print """<td>%s</td>""" % log[1]
         print """<td>%s</td>""" % log[2]
         print """<td>%s</td>""" % log[3]
         print """<td>%s</td>""" % log[4]
-        print """<td style='text-align: right;'>%s</td>""" % (("+" + str(log[5])) if log[5] > 0 else log[5])
+        if log[5] > 0:
+            print """<td style='text-align: right;'>+%.2f</td>""" % log[5]
+        else:
+            print """<td style='text-align: right;'>%s</td>""" % log[5]
         print """</tr>"""
+        prev_log = log
     print """</table>"""
     print """<br />"""
     print """<br />"""
