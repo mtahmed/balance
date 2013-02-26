@@ -24,6 +24,11 @@ conn = MySQLdb.connect(host = settings.database_hostname,
 cursor = conn.cursor()
 
 
+def error(msg):
+    print "error:", msg
+    sys.exit(0)
+
+
 def log(from_user, to_user, for_message, amount):
     '''
     Log the entry for the current user.
@@ -70,11 +75,9 @@ def resolve_prefix(prefix):
         if pattern.match(user):
             matches.append(user)
     if len(matches) > 1:
-        print "error: ambigious name: %s" % from_user
-        exit(0)
+        error("ambigious name: %s" % from_user)
     elif len(matches) == 0:
-        print "error: no matches for name: %s" % from_user
-        exit(0)
+        error("no matches for name: %s" % from_user)
     else:
         return matches[0]
 
@@ -106,10 +109,16 @@ def update_balance(person1, person2, for_message, amount_str):
     '''
     Update the AMOUNT that PERSON1 owes PERSON2.
     '''
+    if person1 == person2:
+        error("a person cannot owe themself")
+
     if amount_str == 'none':
         amount = 0
     else:
-        amount = float(eval(amount_str))
+        try:
+            amount = float(eval(amount_str, {"__builtins__":None}, {}))
+        except:
+            error("invalid math expression %s." % amount_str)
 
     if amount_str[0] in ('+', '-'):
         person1_to_person2 = get_balance(person1, person2)
@@ -138,7 +147,7 @@ def print_table():
     print """<div id='balance-table' style='margin: 0px; padding: 0px;'>"""
     print """<table>"""
     print """<tr>"""
-    print """<td></td>"""
+    print """<td style='font-size: 30px; text-align: center;'>&#x2197;</td>"""
     for user in users:
         print """<td>%s</td>""" % user
     print """</tr>"""
@@ -340,8 +349,7 @@ def print_body_foot():
 
 if __name__ == '__main__':
     if username not in get_all_users() and username not in settings.admin_users:
-        print "Permission denied for user: %s" % username
-        sys.exit(0)
+        error("permission denied for user: %s" % username)
     params = cgi.FieldStorage()
     command_str = ''
     if 'command' in params:

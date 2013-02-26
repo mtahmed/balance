@@ -10,7 +10,9 @@ $(document).ready(
                 $('#status').html('done').delay(5000).queue(function() { $(this).html('') });
                 $('#balance-table').html(data);
               } else {
-                alert(data);
+                $('#status').html('<span style="color:red;">' + data + '</span>')
+                            .delay(8000)
+                            .queue(function() { $(this).html('') });
               }
               $('#command-box').val('');
             }
