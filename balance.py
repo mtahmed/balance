@@ -75,9 +75,9 @@ def resolve_prefix(prefix):
         if pattern.match(user):
             matches.append(user)
     if len(matches) > 1:
-        error("ambigious name: %s" % from_user)
+        error("ambigious prefix: %s" % prefix)
     elif len(matches) == 0:
-        error("no matches for name: %s" % from_user)
+        error("no matches for name: %s" % prefix)
     else:
         return matches[0]
 
