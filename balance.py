@@ -147,7 +147,7 @@ def print_table():
     print """<div id='balance-table' style='margin: 0px; padding: 0px;'>"""
     print """<table>"""
     print """<tr>"""
-    print """<td style='font-size: 30px; text-align: center;'>&#x2197;</td>"""
+    print """<td style='font-weight: bold; font-size: 20px; text-align: center;'>&#x21b1;</td>"""
     for user in users:
         print """<td>%s</td>""" % user
     print """</tr>"""
