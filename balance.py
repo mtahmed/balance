@@ -139,7 +139,7 @@ def update_balance(person1, person2, for_message, amount_str):
 
     log(person1, person2, for_message, amount)
     return
-    
+
 
 def print_table():
     users = get_all_users()
@@ -165,7 +165,7 @@ def print_table():
             else:
                 print """<td style='text-align: right;'>%.2f</td>""" % person1_to_person2
         print """</tr>"""
-    
+
     print """</table>"""
     print """</div>"""
     return
@@ -338,7 +338,7 @@ def print_body_head():
     return
 
 
-def print_body_foot():    
+def print_body_foot():
     print """
     </body>
 
