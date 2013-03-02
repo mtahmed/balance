@@ -33,7 +33,7 @@ def log(from_user, to_user, for_message, amount):
     '''
     Log the entry for the current user.
     '''
-    cursor.execute('''INSERT INTO balance_logs VALUES (NOW(), %s, %s, %s, %s, %s)''',
+    cursor.execute('INSERT INTO balance_logs VALUES (NULL, NOW(), %s, %s, %s, %s, %s)',
                    (username, from_user, to_user, for_message, amount))
     return
 
@@ -122,17 +122,22 @@ def update_balance(person1, person2, for_message, amount_str):
 
     if amount_str[0] in ('+', '-'):
         person1_to_person2 = get_balance(person1, person2)
-        if person1_to_person2 is None:
+        person2_to_person1 = get_balance(person2, person1)
+        if person1_to_person2 is None or person2_to_person1 is None:
             create_new_balance(person1, person2)
             person1_to_person2 = 0.0
-        if person1_to_person2 + amount > 0.0:
+
+        final_amount = amount + person1_to_person2 - person2_to_person1
+        if amount > 0.0:
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                           (person1_to_person2 + amount, person1, person2))
-        else:
+                           (0.0, person2, person1))
+            cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
+                           (final_amount, person1, person2))
+        elif amount <= 0.0:
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
                            (0.0, person1, person2))
             cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                           (-1 * (person1_to_person2 + amount), person2, person1))
+                           ((-1 * final_amount), person2, person1))
     else:
         cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
                        (amount, person1, person2))
@@ -140,6 +145,27 @@ def update_balance(person1, person2, for_message, amount_str):
     log(person1, person2, for_message, amount)
     return
 
+
+def undo(record_id):
+    '''
+    Undo the transaction with log record id `record_id`.
+    '''
+    cursor.execute('''SELECT * FROM balance_logs WHERE id=%s''', (record_id,))
+    rowcount = cursor.rowcount
+    if rowcount <= 0:
+        error("no record with id %s found" % string(record_id))
+    elif rowcount > 1:
+        error("NOOOOOOOOOOOOOOOOOOOOOoooooooooooo: more than one records match")
+    else:
+        record = cursor.fetchone()
+
+    person1 = record[3]
+    person2 = record[4]
+    for_message = "UNDO %d" % record_id
+    amount_str = str(-1 * record[6])
+
+    update_balance(person1, person2, for_message, amount_str)
+    return
 
 def print_table():
     users = get_all_users()
@@ -174,31 +200,37 @@ def print_table():
 def print_logs():
     cursor.execute('''SELECT * FROM balance_logs ORDER BY ts DESC LIMIT 50''')
     logs = cursor.fetchall()
+
     print """<h1>Logs</h1>"""
     print """<table>"""
-    print """<tr><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td>amount</td></tr>"""
+    print """<tr><td>id</td><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td>amount</td></tr>"""
+
     prev_log = None
     for log in logs:
         print """<tr>"""
         print """<td>%s</td>""" % log[0]
         # If the previous log had the same 'for' message and same amount,
-        # then don't print the user this time.
+        # then don't print the user or timestamp this time.
         if prev_log is None:
             print """<td>%s</td>""" % log[1]
-        elif (prev_log[4] == log[4] and
-              prev_log[5] == log[5]):
+            print """<td>%s</td>""" % log[2]
+        elif (prev_log[5] == log[5] and
+              prev_log[6] == log[6]):
+            print """<td></td>"""
             print """<td></td>"""
         else:
             print """<td>%s</td>""" % log[1]
-        print """<td>%s</td>""" % log[2]
+            print """<td>%s</td>""" % log[2]
         print """<td>%s</td>""" % log[3]
         print """<td>%s</td>""" % log[4]
-        if log[5] > 0:
-            print """<td style='text-align: right;'>+%.2f</td>""" % log[5]
+        print """<td>%s</td>""" % log[5]
+        if log[6] > 0:
+            print """<td style='text-align: right;'>+%.2f</td>""" % log[6]
         else:
-            print """<td style='text-align: right;'>%s</td>""" % log[5]
+            print """<td style='text-align: right;'>%s</td>""" % log[6]
         print """</tr>"""
         prev_log = log
+
     print """</table>"""
     print """<br />"""
     print """<br />"""
@@ -221,7 +253,7 @@ def print_form():
 
 def print_examples():
     print """
-        <h1>Examples</h1>
+        <h1>man</h1>
         szbokhar owes mtahmed $10:
         <br />
         <code>szbokhar owes mtahmed 10</code>
@@ -286,6 +318,12 @@ def print_examples():
         <code>all owes mtahmed +(45/5) for pizza</code>
         <br />
         <code>a3 owes mtahmed +(14*3) for 3 months of internet</code>
+        <br />
+        <br />
+        You can undo a transaction using the undo command. Note that this will
+        still log your undo with the for message "UNDO [id]".
+        <br />
+        <code>undo 3</code>
     </div>
     """
     return
@@ -379,6 +417,12 @@ if __name__ == '__main__':
         add_list = command_split[1:]
         for user in add_list:
             add_user(user)
+        print_table()
+    # If the command is undo...
+    elif command_split[0] == 'undo':
+        if len(command_split) > 2:
+            error('bad command syntax')
+        undo(int(command_split[1]))
         print_table()
     # Otherwise, it must be update.
     else:
