@@ -321,9 +321,9 @@ def print_examples():
         <br />
         <br />
         You can undo a transaction using the undo command. Note that this will
-        still log your undo with the for message "UNDO [id]".
+        still log your undo with the for message "UNDO [id]+".
         <br />
-        <code>undo 3</code>
+        <code>undo 3 4 5</code>
     </div>
     """
     return
@@ -422,7 +422,8 @@ if __name__ == '__main__':
     elif command_split[0] == 'undo':
         if len(command_split) > 2:
             error('bad command syntax')
-        undo(int(command_split[1]))
+        for  record_id in comand_split[1:]:
+            undo(int(record_id))
         print_table()
     # Otherwise, it must be update.
     else:
