@@ -81,36 +81,36 @@ def resolve_prefix(prefix):
     else:
         return matches[0]
 
-def create_new_balance(person1, person2):
+def create_new_balance(user1, user2):
     '''
-    Create an empty record for PERSON1 to PERSON2 and the other way.
+    Create an empty record for USER1 to USER2 and the other way.
     '''
     cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''',
-                   (person1, person2, 0))
+                   (user1, user2, 0))
     cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''',
-                   (person2, person1, 0))
+                   (user2, user1, 0))
     return
 
 
-def get_balance(person1, person2):
+def get_balance(from_user, to_user):
     '''
     Get the amount PERSON1 owes PERSON2.
     '''
-    cursor.execute('''SELECT amount FROM balance WHERE person1=%s AND person2=%s''',
-                   (person1, person2))
-    person1_to_person2 = cursor.fetchone()
-    if person1_to_person2 is None:
+    cursor.execute('''SELECT amount FROM balance WHERE from_user=%s AND to_user=%s''',
+                   (from_user, to_user))
+    from_user_to_to_user = cursor.fetchone()
+    if from_user_to_to_user is None:
         return None
     else:
-        return person1_to_person2[0]
+        return from_user_to_to_user[0]
 
 
-def update_balance(person1, person2, for_message, amount_str):
+def update_balance(from_user, to_user, for_message, amount_str):
     '''
-    Update the AMOUNT that PERSON1 owes PERSON2.
+    Update the AMOUNT that FROM_USER owes TO_USER.
     '''
-    if person1 == person2:
-        error("a person cannot owe themself")
+    if from_user == to_user:
+        error("a user cannot owe themself")
 
     if amount_str == 'none':
         amount = 0
@@ -121,28 +121,28 @@ def update_balance(person1, person2, for_message, amount_str):
             error("invalid math expression %s." % amount_str)
 
     if amount_str[0] in ('+', '-'):
-        person1_to_person2 = get_balance(person1, person2)
-        person2_to_person1 = get_balance(person2, person1)
-        if person1_to_person2 is None or person2_to_person1 is None:
-            create_new_balance(person1, person2)
-            person1_to_person2 = 0.0
+        from_user_to_to_user = get_balance(from_user, to_user)
+        to_user_to_from_user = get_balance(to_user, from_user)
+        if from_user_to_to_user is None or to_user_to_from_user is None:
+            create_new_balance(from_user, to_user)
+            from_user_to_to_user = 0.0
 
-        final_amount = amount + person1_to_person2 - person2_to_person1
+        final_amount = amount + from_user_to_to_user - to_user_to_from_user
         if amount > 0.0:
-            cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                           (0.0, person2, person1))
-            cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                           (final_amount, person1, person2))
+            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                           (0.0, to_user, from_user))
+            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                           (final_amount, from_user, to_user))
         elif amount <= 0.0:
-            cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                           (0.0, person1, person2))
-            cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                           ((-1 * final_amount), person2, person1))
+            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                           (0.0, from_user, to_user))
+            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                           ((-1 * final_amount), to_user, from_user))
     else:
-        cursor.execute('''UPDATE balance SET amount=%s WHERE person1=%s AND person2=%s''',
-                       (amount, person1, person2))
+        cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                       (amount, from_user, to_user))
 
-    log(person1, person2, for_message, amount)
+    log(from_user, to_user, for_message, amount)
     return
 
 
@@ -159,12 +159,12 @@ def undo(record_id):
     else:
         record = cursor.fetchone()
 
-    person1 = record[3]
-    person2 = record[4]
+    from_user = record[3]
+    to_user = record[4]
     for_message = "UNDO %d" % record_id
     amount_str = str(-1 * record[6])
 
-    update_balance(person1, person2, for_message, amount_str)
+    update_balance(from_user, to_user, for_message, amount_str)
     return
 
 def print_table():
@@ -178,18 +178,18 @@ def print_table():
         print """<td>%s</td>""" % user
     print """</tr>"""
 
-    for person1 in users:
+    for from_user in users:
         print """<tr>"""
-        print """<td>%s</td>""" % person1
-        for person2 in users:
-            if person1 == person2:
+        print """<td>%s</td>""" % from_user
+        for to_user in users:
+            if from_user == to_user:
                 print """<td></td>"""
                 continue
-            person1_to_person2 = get_balance(person1, person2)
-            if person1_to_person2 == 0.0 or person1_to_person2 is None:
+            from_user_to_to_user = get_balance(from_user, to_user)
+            if from_user_to_to_user == 0.0 or from_user_to_to_user is None:
                 print """<td></td>"""
             else:
-                print """<td style='text-align: right;'>%.2f</td>""" % person1_to_person2
+                print """<td style='text-align: right;'>%.2f</td>""" % from_user_to_to_user
         print """</tr>"""
 
     print """</table>"""
@@ -438,7 +438,7 @@ if __name__ == '__main__':
         to_list = [resolve_prefix(prefix) for prefix in to_list]
 
         amount_str = command_split[-1]
-        for person1 in from_list:
-            for person2 in to_list:
-                update_balance(person1, person2, for_message, amount_str)
+        for from_user in from_list:
+            for to_user in to_list:
+                update_balance(from_user, to_user, for_message, amount_str)
         print_table()
