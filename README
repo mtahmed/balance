@@ -4,9 +4,11 @@
    one could use a SQLite database and change the
    connection creation and script exit functions to
    connect to the SQLite database and to commit before exit.
-2. Change the server's config file to use some authentication
+2. Run the database_schema.sql file (source it from mysql shell etc.) to
+   create the empty tables.
+3. Change the server's config file to use some authentication
    or pass the username in some other way  to the script.
-3. Set the "admin" user in the settings.py file.
+4. Set the "admin" user in the settings.py file.
 
 
 --[ Usage
