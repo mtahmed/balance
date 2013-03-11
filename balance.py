@@ -227,7 +227,7 @@ def print_logs():
         if log[6] > 0:
             print """<td style='text-align: right;'>+%.2f</td>""" % log[6]
         else:
-            print """<td style='text-align: right;'>%s</td>""" % log[6]
+            print """<td style='text-align: right;'>%.2f</td>""" % log[6]
         print """</tr>"""
         prev_log = log
 
