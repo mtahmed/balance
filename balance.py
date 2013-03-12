@@ -175,7 +175,10 @@ def print_table():
     print """<tr>"""
     print """<td style='font-weight: bold; font-size: 20px; text-align: center;'>&#x21b1;</td>"""
     for user in users:
-        print """<td>%s</td>""" % user
+        if user in settings.admin_users:
+            print """<td style='text-decoration: underline;'>%s</td>""" % user
+        else:
+            print """<td>%s</td>""" % user
     print """</tr>"""
 
     for from_user in users:
@@ -203,12 +206,12 @@ def print_logs():
 
     print """<h1>Logs</h1>"""
     print """<table>"""
-    print """<tr><td>id</td><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td>amount</td></tr>"""
+    print """<tr><td style='text-align:right;'>id</td><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td style='text-align:right;'>amount</td></tr>"""
 
     prev_log = None
     for log in logs:
         print """<tr>"""
-        print """<td>%s</td>""" % log[0]
+        print """<td style='text-align:right;'>%s</td>""" % log[0]
         # If the previous log had the same 'for' message and same amount,
         # then don't print the user or timestamp this time.
         if prev_log is None:
@@ -340,6 +343,7 @@ def print_body_head():
     <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'></script>
     <script src='https://csclub.uwaterloo.ca/~mtahmed/balance/commands.js'></script>
     <link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/css/style-main.css' />
+    <link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/balance/style.css' />
 
     <style type='text/css'>
         body {
