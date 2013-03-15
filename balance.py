@@ -170,7 +170,6 @@ def undo(record_id):
 def print_table():
     users = get_all_users()
 
-    print """<div id='balance-table' style='margin: 0px; padding: 0px;'>"""
     print """<table>"""
     print """<tr>"""
     print """<td style='font-weight: bold; font-size: 20px; text-align: center;'>&#x21b1;</td>"""
@@ -196,7 +195,6 @@ def print_table():
         print """</tr>"""
 
     print """</table>"""
-    print """</div>"""
     return
 
 
@@ -241,13 +239,12 @@ def print_logs():
 
 
 def print_form():
-    users = get_all_users()
-
     print """
     <div style='margin-top: 15px;'>
         <input type='text' id='command-box' style='width: 296px; padding: 0px;' /> [Enter to submit]
         <br />
         <div id='status' style='height: 15px;  width: 300px; background-color: #ddd;'></div>
+    </div>
         <br />
         <br />
     """
@@ -256,123 +253,122 @@ def print_form():
 
 def print_examples():
     print """
-        <h1>man</h1>
-        szbokhar owes mtahmed $10:
-        <br />
-        <code>szbokhar owes mtahmed 10</code>
-        <br />
-        <br />
-        szbokhar owes mtahmed $10 more:
-        <br />
-        <code>szbokhar owes mtahmed +10</code>
-        <br />
-        <br />
-        szbokhar pays back mtahmed $10:
-        <br />
-        <code>szbokhar owes mtahmed -10</code>
-        <br />
-        <br />
-        szbokhar pays back mtahmed all that he owes:
-        <br />
-        <code>szbokhar owes mtahmed 0</code>
-        <br />
-        or
-        <br />
-        <code>szbokhar owes mtahmed none</code>
-        <br />
-        <br />
-        The command line also accepts unambigious prefixes of usernames.
-        <br />
-        So all these are equivalent (for users: [mtahmed, szbokhar, my4li])
-        <br />
-        <code>szbokhar owes mtahmed 0</code>
-        <br />
-        <code>szbokhar owes mt 0</code>
-        <br />
-        <code>s owes mt 0</code>
-        <br />
-        <code>sz owes mt 0</code>
-        <br />
-        <br />
-        The command line also accepts lists.
-        <br />
-        Everyone owes mtahmed +$2
-        <br />
-        <code>szbokhar my4li blung owes mtahmed +2</code>
-        <br />
-        <br />
-        The above can also be written using the 'all' keyword.
-        <br />
-        <code>all owes mtahmed +2</code>
-        <br />
-        <br />
-        The 'for' keyword can be used to log reasons for updates.
-        <br />
-        <code>all owes mtahmed +10 for pizza</code>
-        <br />
-        <code>szbokhar owes mtahmed -10 for paid back</code>
-        <br />
-        <br />
-        The amount can be a mathematical expression WITHOUT any spaces:
-        <br />
-        So for example mtahmed pays $45 for pizza and there are 5 people
-        who ate the pizza:
-        <br />
-        <code>all owes mtahmed +(45/5) for pizza</code>
-        <br />
-        <code>a3 owes mtahmed +(14*3) for 3 months of internet</code>
-        <br />
-        <br />
-        You can undo a transaction using the undo command. Note that this will
-        still log your undo with the for message "UNDO [id]+".
-        <br />
-        <code>undo 3 4 5</code>
-    </div>
+    <h1>man</h1>
+    szbokhar owes mtahmed $10:
+    <br />
+    <code>szbokhar owes mtahmed 10</code>
+    <br />
+    <br />
+    szbokhar owes mtahmed $10 more:
+    <br />
+    <code>szbokhar owes mtahmed +10</code>
+    <br />
+    <br />
+    szbokhar pays back mtahmed $10:
+    <br />
+    <code>szbokhar owes mtahmed -10</code>
+    <br />
+    <br />
+    szbokhar pays back mtahmed all that he owes:
+    <br />
+    <code>szbokhar owes mtahmed 0</code>
+    <br />
+    or
+    <br />
+    <code>szbokhar owes mtahmed none</code>
+    <br />
+    <br />
+    The command line also accepts unambigious prefixes of usernames.
+    <br />
+    So all these are equivalent (for users: [mtahmed, szbokhar, my4li])
+    <br />
+    <code>szbokhar owes mtahmed 0</code>
+    <br />
+    <code>szbokhar owes mt 0</code>
+    <br />
+    <code>s owes mt 0</code>
+    <br />
+    <code>sz owes mt 0</code>
+    <br />
+    <br />
+    The command line also accepts lists.
+    <br />
+    Everyone owes mtahmed +$2
+    <br />
+    <code>szbokhar my4li blung owes mtahmed +2</code>
+    <br />
+    <br />
+    The above can also be written using the 'all' keyword.
+    <br />
+    <code>all owes mtahmed +2</code>
+    <br />
+    <br />
+    The 'for' keyword can be used to log reasons for updates.
+    <br />
+    <code>all owes mtahmed +10 for pizza</code>
+    <br />
+    <code>szbokhar owes mtahmed -10 for paid back</code>
+    <br />
+    <br />
+    The amount can be a mathematical expression WITHOUT any spaces:
+    <br />
+    So for example mtahmed pays $45 for pizza and there are 5 people
+    who ate the pizza:
+    <br />
+    <code>all owes mtahmed +(45/5) for pizza</code>
+    <br />
+    <code>a3 owes mtahmed +(14*3) for 3 months of internet</code>
+    <br />
+    <br />
+    You can undo a transaction using the undo command. Note that this will
+    still log your undo with the for message "UNDO [id]+".
+    <br />
+    <code>undo 3 4 5</code>
     """
     return
 
 
 def print_body_head():
     print """
-    <!DOCTYPE HTML>
+<!DOCTYPE HTML>
 
-    <html>
+<html>
 
-    <head>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js'></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'></script>
-    <script src='https://csclub.uwaterloo.ca/~mtahmed/balance/commands.js'></script>
-    <link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/css/style-main.css' />
-    <link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/balance/style.css' />
+<head>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'></script>
+<script src='https://csclub.uwaterloo.ca/~mtahmed/balance/commands.js'></script>
+<link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/css/style-main.css' />
+<link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/balance/style.css' />
 
-    <style type='text/css'>
-        body {
-            font-size: 12px;
-        }
-        table {
-            border-collapse: collapse;
-            padding: 0px;
-            margin: 0px;
-        }
-        tr {
-            padding: 0px;
-            margin: 0px;
-        }
-        td {
-            padding: 5px;
-        }
-        table, th, td {
-            border: 1px solid #999;
-        }
-        code {
-            padding: 2px;
-            font-family: monospace;
-            background-color: #CCC;
-        }
-    </style>
-    </head>
+<style type='text/css'>
+    body {
+        font-size: 12px;
+    }
+    table {
+        border-collapse: collapse;
+        padding: 0px;
+        margin: 0px;
+    }
+    tr {
+        padding: 0px;
+        margin: 0px;
+    }
+    td {
+        padding: 5px;
+    }
+    table, th, td {
+        border: 1px solid #999;
+    }
+    code {
+        padding: 2px;
+        font-family: monospace;
+        background-color: #CCC;
+    }
+</style>
+</head>
 
-    <body>
+<body>
     """
     print "User: %s" % username
     print "<br />"
