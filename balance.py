@@ -420,8 +420,6 @@ if __name__ == '__main__':
         print_table()
     # If the command is undo...
     elif command_split[0] == 'undo':
-        if len(command_split) > 2:
-            error('bad command syntax')
         for  record_id in comand_split[1:]:
             undo(int(record_id))
         print_table()
