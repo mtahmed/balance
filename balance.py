@@ -126,14 +126,15 @@ def update_balance(from_user, to_user, for_message, amount_str):
         if from_user_to_to_user is None or to_user_to_from_user is None:
             create_new_balance(from_user, to_user)
             from_user_to_to_user = 0.0
+            to_user_to_from_user = 0.0
 
         final_amount = amount + from_user_to_to_user - to_user_to_from_user
-        if amount > 0.0:
+        if final_amount > 0.0:
             cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
                            (0.0, to_user, from_user))
             cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
                            (final_amount, from_user, to_user))
-        elif amount <= 0.0:
+        elif final_amount <= 0.0:
             cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
                            (0.0, from_user, to_user))
             cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
@@ -170,6 +171,7 @@ def undo(record_id):
 def print_table():
     users = get_all_users()
 
+    print """<div id='balance-table'>"""
     print """<table>"""
     print """<tr>"""
     print """<td style='font-weight: bold; font-size: 20px; text-align: center;'>&#x21b1;</td>"""
@@ -195,6 +197,7 @@ def print_table():
         print """</tr>"""
 
     print """</table>"""
+    print """</div>"""
     return
 
 
@@ -420,7 +423,7 @@ if __name__ == '__main__':
         print_table()
     # If the command is undo...
     elif command_split[0] == 'undo':
-        for  record_id in comand_split[1:]:
+        for  record_id in command_split[1:]:
             undo(int(record_id))
         print_table()
     # Otherwise, it must be update.
