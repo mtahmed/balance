@@ -335,6 +335,7 @@ def print_body_head():
 <html>
 
 <head>
+<title>Balance | Muhammad Tauqir Ahmad</title>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js'></script>
 <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'></script>
 <script src='https://csclub.uwaterloo.ca/~mtahmed/balance/commands.js'></script>
