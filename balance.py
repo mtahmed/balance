@@ -168,7 +168,7 @@ def undo(record_id):
     update_balance(from_user, to_user, for_message, amount_str)
     return
 
-def print_table():
+def print_balance():
     users = get_all_users()
 
     print """<div id='balance-table'>"""
@@ -206,6 +206,7 @@ def print_logs():
     logs = cursor.fetchall()
 
     print """<h1>Logs</h1>"""
+    print """<div id='logs-table'>"""
     print """<table>"""
     print """<tr><td style='text-align:right;'>id</td><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td style='text-align:right;'>amount</td></tr>"""
 
@@ -236,6 +237,7 @@ def print_logs():
         prev_log = log
 
     print """</table>"""
+    print """</div>"""
     print """<br />"""
     print """<br />"""
     return
@@ -410,22 +412,22 @@ if __name__ == '__main__':
     if command_split[0] == '':
         print_body_head()
         print """<h1>Balance</h1>"""
-        print_table()
+        print_balance()
         print_form()
         print_logs()
         print_examples()
         print_body_foot()
-    # If the command is add...
+    elif command_split[0] == 'print_balance':
+        print_balance()
+    elif command_split[0] == 'print_logs':
+        print_logs()
     elif command_split[0] == 'add':
         add_list = command_split[1:]
         for user in add_list:
             add_user(user)
-        print_table()
-    # If the command is undo...
     elif command_split[0] == 'undo':
         for  record_id in command_split[1:]:
             undo(int(record_id))
-        print_table()
     # Otherwise, it must be update.
     else:
         owes_index = command_split.index('owes')
@@ -442,4 +444,3 @@ if __name__ == '__main__':
         for from_user in from_list:
             for to_user in to_list:
                 update_balance(from_user, to_user, for_message, amount_str)
-        print_table()
