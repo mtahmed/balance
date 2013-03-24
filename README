@@ -16,3 +16,17 @@ To start off, login as "admin" and add users to the system
 by issuing the command `add user1 user2 user3`.
 
 Other usage examples are given on the webpage itself.
+
+Please acknowledge any use of this software and let me know when using.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  For the terms of the license, see <http://www.gnu.org/licenses/>.
