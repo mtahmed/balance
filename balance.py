@@ -205,7 +205,6 @@ def print_logs():
     cursor.execute('''SELECT * FROM balance_logs ORDER BY ts DESC LIMIT 50''')
     logs = cursor.fetchall()
 
-    print """<h1>Logs</h1>"""
     print """<div id='logs-table'>"""
     print """<table>"""
     print """<tr><td style='text-align:right;'>id</td><td>date</td><td>user</td><td>from</td><td>to</td><td>for</td><td style='text-align:right;'>amount</td></tr>"""
@@ -410,6 +409,7 @@ if __name__ == '__main__':
         print """<h1>Balance</h1>"""
         print_balance()
         print_form()
+        print """<h1>Logs</h1>"""
         print_logs()
         print_examples()
         print_body_foot()
