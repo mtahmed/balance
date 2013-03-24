@@ -238,8 +238,6 @@ def print_logs():
 
     print """</table>"""
     print """</div>"""
-    print """<br />"""
-    print """<br />"""
     return
 
 
@@ -250,8 +248,6 @@ def print_form():
         <br />
         <div id='status' style='height: 15px;  width: 300px; background-color: #ddd;'></div>
     </div>
-        <br />
-        <br />
     """
     return
 
