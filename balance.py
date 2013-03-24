@@ -418,6 +418,8 @@ if __name__ == '__main__':
     elif command_split[0] == 'print_logs':
         print_logs()
     elif command_split[0] == 'add':
+        if username not in settings.admin_users:
+            error("only admin users can users.")
         add_list = command_split[1:]
         for user in add_list:
             add_user(user)
