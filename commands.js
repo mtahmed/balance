@@ -1,5 +1,6 @@
 $(document).ready(
   function() {
+    $('#command-box').val('update ');
     $('#command-box').focus();
     $('#command-box').keyup(
       function(e) {
