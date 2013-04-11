@@ -445,4 +445,4 @@ if __name__ == '__main__':
             for to_user in to_list:
                 update_balance(from_user, to_user, for_message, amount_str)
     else:
-        error(command_str)
+        error("unknown command: %s" % command_str)
