@@ -105,7 +105,7 @@ def get_balance(from_user, to_user):
         return from_user_to_to_user[0]
 
 
-def update_balance(from_user, to_user, for_message, amount_str):
+def update_balance(from_user, to_user, for_message, amount_str, log_record=True):
     '''
     Update the AMOUNT that FROM_USER owes TO_USER.
     '''
@@ -143,11 +143,12 @@ def update_balance(from_user, to_user, for_message, amount_str):
         cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
                        (amount, from_user, to_user))
 
-    log(from_user, to_user, for_message, amount)
+    if log_record:
+        log(from_user, to_user, for_message, amount)
     return
 
 
-def undo(record_id):
+def undo(record_id, delete=False):
     '''
     Undo the transaction with log record id `record_id`.
     '''
@@ -165,7 +166,12 @@ def undo(record_id):
     for_message = "UNDO %d" % record_id
     amount_str = str(-1 * record[6])
 
-    update_balance(from_user, to_user, for_message, amount_str)
+    if delete:
+        cursor.execute('''DELETE FROM balance_logs where id=%s''', (record_id))
+
+    # If delete, then don't log_record.
+    log_record = not delete
+    update_balance(from_user, to_user, for_message, amount_str, log_record)
     return
 
 def print_balance():
@@ -420,12 +426,17 @@ if __name__ == '__main__':
         print_logs()
     elif command_split[0] == 'add':
         if username not in settings.admin_users:
-            error("only admin users can users.")
+            error("only admin users can add users.")
         add_list = command_split[1:]
         for user in add_list:
             add_user(user)
+    elif command_split[0] == 'delete':
+        if username not in settings.admin_users:
+            error("only admin users can delete records")
+        for record_id in command_split[1:]:
+            undo(int(record_id), delete=True)
     elif command_split[0] == 'undo':
-        for  record_id in command_split[1:]:
+        for record_id in command_split[1:]:
             undo(int(record_id))
     # Otherwise, it must be update.
     elif command_split[0] == 'update':
