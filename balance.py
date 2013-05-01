@@ -286,6 +286,30 @@ def print_form():
 def print_examples():
     print """
     <h1>man</h1>
+    The general format of commands is:
+    <br />
+    <code>&lt;command&gt; arg1 arg2 ...</code>
+    <br />
+    <br />
+    Commands:
+    <br />
+    <code>update [USER]+ owes [USER]+ ... +/-NUM/EXPR for REASON</code>
+    <br />
+    <br />
+    <code>undo [LOG_ID]+</code>
+    <br />
+    <br />
+    <code>filter [FEILD=VALUE]+</code>
+    <br />
+    <br />
+    <code>add [USER]+</code> (admin-only)
+    <br />
+    <br />
+    <code>delete [LOG_ID]+</code> (admin-only)
+    <br />
+    <br />
+
+    <h1>Examples</h1>
     szbokhar owes mtahmed $10:
     <br />
     <code>update szbokhar owes mtahmed 10</code>
@@ -356,6 +380,13 @@ def print_examples():
     still log your undo with the for message "UNDO [id]+".
     <br />
     <code>undo 3 4 5</code>
+    <br />
+    <br />
+    You can filter logs using the filter command and supplying field=value pairs
+    where field is one of the headings of the log table. For example if I want
+    to see why I owe my4li the amount that I owe him, I can do the following:
+    <br />
+    <code>filter from=mtahmed to=my4li</code>
     """
     return
 
