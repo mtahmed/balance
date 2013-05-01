@@ -23,7 +23,6 @@ conn = MySQLdb.connect(host = settings.database_hostname,
                        db = settings.database_name)
 cursor = conn.cursor()
 
-
 def error(msg):
     print "error:", msg
     sys.exit(0)
@@ -207,8 +206,35 @@ def print_balance():
     return
 
 
-def print_logs():
-    cursor.execute('''SELECT * FROM balance_logs ORDER BY ts DESC LIMIT 50''')
+def print_logs(filters=[]):
+    logs_fields = ('id', 'ts', 'user', 'from_user', 'to_user', 'for_message',
+                   'amount')
+    where = []
+    values = []
+    for f in filters:
+        field, value = f.split('=')
+
+        # If the filters use short form of the fields set them to the full form.
+        if field == 'from':
+            field = 'from_user'
+        elif field == 'to':
+            field = 'to_user'
+        elif field == 'for':
+            field = 'for_message'
+
+        if field not in logs_fields:
+            error('unknown field %s' % field)
+        where.append('%s=%%s' % field)
+        values.append(value)
+
+    if where:
+        where_string = ' AND '.join(where)
+        query = 'SELECT * FROM balance_logs WHERE %s ORDER BY ts DESC LIMIT 50' % where_string
+        cursor.execute(query, tuple(values))
+    else:
+        query = 'SELECT * FROM balance_logs ORDER BY ts DESC LIMIT 50'
+        cursor.execute(query)
+
     logs = cursor.fetchall()
 
     print """<div id='logs-table'>"""
@@ -438,7 +464,6 @@ if __name__ == '__main__':
     elif command_split[0] == 'undo':
         for record_id in command_split[1:]:
             undo(int(record_id))
-    # Otherwise, it must be update.
     elif command_split[0] == 'update':
         command_split = command_split[1:]
         owes_index = command_split.index('owes')
@@ -455,5 +480,10 @@ if __name__ == '__main__':
         for from_user in from_list:
             for to_user in to_list:
                 update_balance(from_user, to_user, for_message, amount_str)
+    elif command_split[0] == 'filter':
+        if len(command_split) > 1:
+            print_logs(command_split[1:])
+        else:
+            print_logs()
     else:
         error("unknown command: %s" % command_str)
