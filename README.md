@@ -3,6 +3,7 @@
 A simple tool to keep track of who owes who among a group of friends/co-workers.
 
 # How to deploy
+
 1. Fill in the right settings for the database
    connection in the settings.py file. Alternatively,
    one could use a SQLite database and change the
@@ -16,10 +17,13 @@ A simple tool to keep track of who owes who among a group of friends/co-workers.
 
 
 # Usage
+
 To start off, login as "admin" and add users to the system
 by issuing the command `add user1 user2 ...`.
 
 The man page and other usage examples are given on the webpage itself.
+
+# License
 
 Please acknowledge any use of this software and let me know when using.
 
