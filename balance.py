@@ -275,9 +275,9 @@ def print_logs(filters=[]):
 def print_form():
     print """
     <div style='margin-top: 15px;'>
-        <input type='text' id='command-box' style='width: 298px; padding: 0px;' /> [Enter to submit]
+        <input type='text' id='command-box' /> [Enter to submit]
         <br />
-        <div id='status' style='height: 15px;  width: 300px; background-color: #ddd;'></div>
+        <div id='status'></div>
     </div>
     """
     return
