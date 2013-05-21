@@ -111,6 +111,12 @@ def update_balance(from_user, to_user, for_message, amount_str, log_record=True)
     if from_user == to_user:
         error("a user cannot owe themself")
 
+    # Just set it to 0 in case someone paid back the whole amount.
+    if amount_str in 'none' or '0':
+        cursor.execute('''UPDATE balance SET amount=0 WHERE from_user=%s AND to_user=%s''',
+                        (to_user, from_user))
+        return
+
     if amount_str == 'none':
         amount = 0
     else:
@@ -119,28 +125,24 @@ def update_balance(from_user, to_user, for_message, amount_str, log_record=True)
         except:
             error("invalid math expression %s." % amount_str)
 
-    if amount_str[0] in ('+', '-'):
-        from_user_to_to_user = get_balance(from_user, to_user)
-        to_user_to_from_user = get_balance(to_user, from_user)
-        if from_user_to_to_user is None or to_user_to_from_user is None:
-            create_new_balance(from_user, to_user)
-            from_user_to_to_user = 0.0
-            to_user_to_from_user = 0.0
+    from_user_to_to_user = get_balance(from_user, to_user)
+    to_user_to_from_user = get_balance(to_user, from_user)
+    if from_user_to_to_user is None or to_user_to_from_user is None:
+        create_new_balance(from_user, to_user)
+        from_user_to_to_user = 0.0
+        to_user_to_from_user = 0.0
 
-        final_amount = amount + from_user_to_to_user - to_user_to_from_user
-        if final_amount > 0.0:
-            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
-                           (0.0, to_user, from_user))
-            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
-                           (final_amount, from_user, to_user))
-        elif final_amount <= 0.0:
-            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
-                           (0.0, from_user, to_user))
-            cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
-                           ((-1 * final_amount), to_user, from_user))
-    else:
+    final_amount = amount + from_user_to_to_user - to_user_to_from_user
+    if final_amount > 0.0:
         cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
-                       (amount, from_user, to_user))
+                        (0.0, to_user, from_user))
+        cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                        (final_amount, from_user, to_user))
+    elif final_amount <= 0.0:
+        cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                        (0.0, from_user, to_user))
+        cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
+                        ((-1 * final_amount), to_user, from_user))
 
     if log_record:
         log(from_user, to_user, for_message, amount)
@@ -293,7 +295,7 @@ def print_examples():
     <br />
     Commands:
     <br />
-    <code>update [USER]+ owes [USER]+ ... +/-NUM/EXPR for REASON</code>
+    <code>update [USER]+ owes [USER]+ ... [+/-]NUM/EXPR for REASON</code>
     <br />
     <br />
     <code>undo [LOG_ID]+</code>
@@ -310,12 +312,11 @@ def print_examples():
     <br />
 
     <h1>Examples</h1>
-    szbokhar owes mtahmed $10:
+    szbokhar owes mtahmed $10 more:
     <br />
     <code>update szbokhar owes mtahmed 10</code>
     <br />
-    <br />
-    szbokhar owes mtahmed $10 more:
+    or
     <br />
     <code>update szbokhar owes mtahmed +10</code>
     <br />
