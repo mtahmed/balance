@@ -499,7 +499,6 @@ if __name__ == '__main__':
         for record_id in command_split[1:]:
             undo(int(record_id))
     elif 'owes' in command_split:
-        command_split = command_split[1:]
         owes_index = command_split.index('owes')
         if command_split[0] == 'all':
             from_list = users
