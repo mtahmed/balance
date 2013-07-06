@@ -34,7 +34,6 @@ function print_done(msg) {
 
 $(document).ready(
   function() {
-    $('#command-box').val('update ');
     $('#command-box').focus();
     $('#command-box').keyup(
       function(e) {

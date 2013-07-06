@@ -468,6 +468,8 @@ if __name__ == '__main__':
         command_split = command_str[:for_index - 1].split(' ')
         for_message = command_str[for_index+4:]
 
+    command_split = [s.strip() for s in command_split]
+
     # If there's no command...
     if command_split[0] == '':
         print_body_head()
@@ -496,7 +498,7 @@ if __name__ == '__main__':
     elif command_split[0] == 'undo':
         for record_id in command_split[1:]:
             undo(int(record_id))
-    elif command_split[0] == 'update':
+    elif 'owes' in command_split:
         command_split = command_split[1:]
         owes_index = command_split.index('owes')
         if command_split[0] == 'all':
