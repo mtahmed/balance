@@ -1,7 +1,27 @@
+body {
+  font-size: 12px;
+}
 table {
+  border-collapse: collapse;
+  padding: 0px;
+  margin: 0px;
   font-family: monospace;
 }
-
+tr {
+  padding: 0px;
+  margin: 0px;
+}
+td {
+  padding: 5px;
+}
+table, th, td {
+  border: 1px solid #999;
+}
+code {
+  padding: 2px;
+  font-family: monospace;
+  background-color: #CCC;
+}
 #balance-table td {
   min-width: 50px;
 }

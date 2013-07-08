@@ -403,34 +403,9 @@ def print_body_head():
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js'></script>
 <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'></script>
 <script src='https://csclub.uwaterloo.ca/~mtahmed/balance/commands.js'></script>
-<link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/css/style-main.css' />
-<link rel='stylesheet' type='text/css' href='https://www.csclub.uwaterloo.ca/~mtahmed/balance/style.css' />
+<link rel='stylesheet' type='text/css' href='https://csclub.uwaterloo.ca/~mtahmed/css/style-main.css' />
+<link rel='stylesheet' type='text/css' href='https://csclub.uwaterloo.ca/~mtahmed/balance/style.css' />
 
-<style type='text/css'>
-    body {
-        font-size: 12px;
-    }
-    table {
-        border-collapse: collapse;
-        padding: 0px;
-        margin: 0px;
-    }
-    tr {
-        padding: 0px;
-        margin: 0px;
-    }
-    td {
-        padding: 5px;
-    }
-    table, th, td {
-        border: 1px solid #999;
-    }
-    code {
-        padding: 2px;
-        font-family: monospace;
-        background-color: #CCC;
-    }
-</style>
 </head>
 
 <body>
