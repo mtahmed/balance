@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Make sure division is always floating point.
+from __future__ import division
+
 # Standard imports
 import sys
 import os
