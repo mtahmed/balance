@@ -291,14 +291,9 @@ def print_form():
 def print_examples():
     print """
     <h1>man</h1>
-    The general format of commands is:
-    <br />
-    <code>&lt;command&gt; arg1 arg2 ...</code>
-    <br />
-    <br />
     Commands:
     <br />
-    <code>update [USER]+ owes [USER]+ ... [+/-]NUM/EXPR for REASON</code>
+    <code>[USER]+ owes [USER]+ ... [+/-]NUM/EXPR for REASON</code>
     <br />
     <br />
     <code>undo [LOG_ID]+</code>
@@ -317,57 +312,57 @@ def print_examples():
     <h1>Examples</h1>
     szbokhar owes mtahmed $10 more:
     <br />
-    <code>update szbokhar owes mtahmed 10</code>
+    <code>szbokhar owes mtahmed 10</code>
     <br />
     or
     <br />
-    <code>update szbokhar owes mtahmed +10</code>
+    <code>szbokhar owes mtahmed +10</code>
     <br />
     <br />
     szbokhar pays back mtahmed $10:
     <br />
-    <code>update szbokhar owes mtahmed -10</code>
+    <code>szbokhar owes mtahmed -10</code>
     <br />
     <br />
     szbokhar pays back mtahmed all that he owes:
     <br />
-    <code>update szbokhar owes mtahmed 0</code>
+    <code>szbokhar owes mtahmed 0</code>
     <br />
     or
     <br />
-    <code>update szbokhar owes mtahmed none</code>
+    <code>szbokhar owes mtahmed none</code>
     <br />
     <br />
     The command line also accepts unambigious prefixes of usernames.
     <br />
     So all these are equivalent (for users: [mtahmed, szbokhar, my4li])
     <br />
-    <code>update szbokhar owes mtahmed 0</code>
+    <code>szbokhar owes mtahmed 0</code>
     <br />
-    <code>update szbokhar owes mt 0</code>
+    <code>szbokhar owes mt 0</code>
     <br />
-    <code>update s owes mt 0</code>
+    <code>s owes mt 0</code>
     <br />
-    <code>update sz owes mt 0</code>
+    <code>sz owes mt 0</code>
     <br />
     <br />
     The command line also accepts lists.
     <br />
     Everyone owes mtahmed +$2
     <br />
-    <code>update szbokhar my4li blung owes mtahmed +2</code>
+    <code>szbokhar my4li blung owes mtahmed +2</code>
     <br />
     <br />
     The above can also be written using the 'all' keyword.
     <br />
-    <code>update all owes mtahmed +2</code>
+    <code>all owes mtahmed +2</code>
     <br />
     <br />
     The 'for' keyword can be used to log reasons for updates.
     <br />
-    <code>update all owes mtahmed +10 for pizza</code>
+    <code>all owes mtahmed +10 for pizza</code>
     <br />
-    <code>update szbokhar owes mtahmed -10 for paid back</code>
+    <code>szbokhar owes mtahmed -10 for paid back</code>
     <br />
     <br />
     The amount can be a mathematical expression WITHOUT any spaces:
@@ -375,9 +370,9 @@ def print_examples():
     So for example mtahmed pays $45 for pizza and there are 5 people
     who ate the pizza:
     <br />
-    <code>update all owes mtahmed +(45/5) for pizza</code>
+    <code>all owes mtahmed +(45/5) for pizza</code>
     <br />
-    <code>update a3 owes mtahmed +(14*3) for 3 months of internet</code>
+    <code>a3 owes mtahmed +(14*3) for 3 months of internet</code>
     <br />
     <br />
     You can undo a transaction using the undo command. Note that this will
