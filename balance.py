@@ -200,7 +200,7 @@ def print_balance():
                 print """<td></td>"""
                 continue
             from_user_to_to_user = get_balance(from_user, to_user)
-            if from_user_to_to_user == 0.0 or from_user_to_to_user is None:
+            if from_user_to_to_user < 0.01 or from_user_to_to_user is None:
                 print """<td></td>"""
             else:
                 print """<td style='text-align: right;'>%.2f</td>""" % from_user_to_to_user
