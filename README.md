@@ -2,7 +2,7 @@
 
 A simple tool to keep track of who owes who among a group of friends/co-workers.
 
-# How to deploy
+## Installation
 
 1. Fill in the right settings for the database
    connection in the settings.py file. Alternatively,
@@ -16,14 +16,14 @@ A simple tool to keep track of who owes who among a group of friends/co-workers.
 4. Set the `admin` user in the `settings.py` file.
 
 
-# Usage
+## Usage
 
 To start off, login as "admin" and add users to the system
 by issuing the command `add user1 user2 ...`.
 
 The man page and other usage examples are given on the webpage itself.
 
-# License
+## License
 
 Please acknowledge any use of this software and let me know when using.
 
