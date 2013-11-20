@@ -38,3 +38,7 @@ Please acknowledge any use of this software and let me know when using.
   GNU General Public License for more details.
 
   For the terms of the license, see <http://www.gnu.org/licenses/>.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mtahmed/balance/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
