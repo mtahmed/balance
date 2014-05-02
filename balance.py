@@ -213,7 +213,7 @@ def print_balance():
         print """<td>%s</td>""" % from_user
         for to_user in users:
             if from_user == to_user:
-                print """<td></td>"""
+                print """<td style='background-color:#d1d1d1;'></td>"""
                 continue
             from_user_to_to_user = get_balance(from_user, to_user)
             if from_user_to_to_user < 0.01 or from_user_to_to_user is None:
@@ -497,7 +497,7 @@ if __name__ == '__main__':
     elif command_split[0] == 'undo':
         for record_id in command_split[1:]:
             undo(int(record_id))
-    elif command_split[0] == 'edit'
+    elif command_split[0] == 'edit':
         edit_comment(int(command_split[1]), command_split[3:])
     elif 'owes' in command_split:
         owes_index = command_split.index('owes')
