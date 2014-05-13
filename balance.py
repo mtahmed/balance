@@ -178,6 +178,22 @@ def undo(record_id, delete=False):
     update_balance(from_user, to_user, for_message, amount_str, log_record)
     return
 
+
+def edit_comment(record_id, new_comment):
+    '''
+    Edit the comment associated with a transaction with log record id 'record_id'
+    '''
+    cursor.execute('''SELECT * from balance_logs WHERE id=%s''', (record_id,))
+    rowcount = cursor.rowcount
+    if rowcount <= 0:
+        error("no record with id %s found" % string(record_id))
+    elif rowcount > 1:
+        error("NOOOOOOOOOOOOOOOOOOOOOoooooooooooo: more than one records match")
+    else:
+        cursor.execute('''UPDATE balance_logs SET for_message=%s WHERE id=%s''', (new_comment, record_id))
+    return
+
+
 def print_balance():
     users = get_all_users()
 
@@ -197,7 +213,7 @@ def print_balance():
         print """<td>%s</td>""" % from_user
         for to_user in users:
             if from_user == to_user:
-                print """<td></td>"""
+                print """<td style='background-color:#d1d1d1;'></td>"""
                 continue
             from_user_to_to_user = get_balance(from_user, to_user)
             if from_user_to_to_user < 0.01 or from_user_to_to_user is None:
@@ -299,7 +315,10 @@ def print_examples():
     <code>undo [LOG_ID]+</code>
     <br />
     <br />
-    <code>filter [FEILD=VALUE]+</code>
+    <code>edit [LOG_ID] as REASON</code>
+    <br />
+    <br />
+    <code>filter [FIELD=VALUE]+</code>
     <br />
     <br />
     <code>add [USER]+</code> (admin-only)
@@ -379,6 +398,13 @@ def print_examples():
     still log your undo with the for message "UNDO [id]+".
     <br />
     <code>undo 3 4 5</code>
+    <br />
+    <br />
+    You can modify the reason for a transaction if there is a mistake
+    (i.e. it's comment) using the 'edit' command. Everything after 'as' is
+    considered part of the new comment.
+    <br />
+    <code>edit 3 as pizza</code>
     <br />
     <br />
     You can filter logs using the filter command and supplying field=value pairs
@@ -471,6 +497,8 @@ if __name__ == '__main__':
     elif command_split[0] == 'undo':
         for record_id in command_split[1:]:
             undo(int(record_id))
+    elif command_split[0] == 'edit':
+        edit_comment(int(command_split[1]), command_split[3:])
     elif 'owes' in command_split:
         owes_index = command_split.index('owes')
         if command_split[0] == 'all':
