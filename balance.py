@@ -312,6 +312,9 @@ def print_examples():
     <code>[USER]+ owes [USER]+ ... [+/-]NUM/EXPR for REASON</code>
     <br />
     <br />
+    <code>[USER] paysoff [USER]</code>
+    <br />
+    <br />
     <code>undo [LOG_ID]+</code>
     <br />
     <br />
@@ -350,6 +353,12 @@ def print_examples():
     or
     <br />
     <code>szbokhar owes mtahmed none</code>
+    <br />
+    <br />
+    Note that the following method clears any debt between the two users and logs
+    the transaction
+    <br />
+    <code>szbokhar paysoff mtahmed</code>
     <br />
     <br />
     The command line also accepts unambigious prefixes of usernames.
@@ -499,6 +508,19 @@ if __name__ == '__main__':
             undo(int(record_id))
     elif command_split[0] == 'edit':
         edit_comment(int(command_split[1]), command_split[3:])
+    elif command_split[1] == 'paysoff':
+        user1 = resolve_prefix(command_split[0])
+        user2 = resolve_prefix(command_split[2])
+        owed1to2 = get_balance(user1, user2)
+        owed2to1 = get_balance(user2, user1)
+        if owed1to2 is None:
+            if owed2to1 is None:
+                error("there is no owed money between these two users")
+            log(user2, user1, "payoff", owed2to1 * -1)
+            update_balance(user2, user1, 0, false)
+        elif owed1to2 is None:
+            log(user1, user2, "payoff", owed1to2 * -1)
+            update_balance(user1, user2, 0, false)
     elif 'owes' in command_split:
         owes_index = command_split.index('owes')
         if command_split[0] == 'all':
