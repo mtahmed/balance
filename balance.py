@@ -219,7 +219,12 @@ def print_balance():
             if from_user_to_to_user < 0.01 or from_user_to_to_user is None:
                 print """<td></td>"""
             else:
-                print """<td style='text-align: right;'>%.2f</td>""" % from_user_to_to_user
+                if username == from_user:
+                    print """<td style='text-align: right;color: #0000FF;'>%.2f</td>""" % from_user_to_to_user
+                elif username == to_user:
+                    print """<td style='text-align: right;color: #008000;'>%.2f</td>""" % from_user_to_to_user
+                else:
+                    print """<td style='text-align: right;'>%.2f</td>""" % from_user_to_to_user
         print """</tr>"""
 
     print """</table>"""
