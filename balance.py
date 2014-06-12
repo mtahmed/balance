@@ -513,12 +513,12 @@ if __name__ == '__main__':
         user2 = resolve_prefix(command_split[2])
         owed1to2 = get_balance(user1, user2)
         owed2to1 = get_balance(user2, user1)
-        if owed1to2 is None:
-            if owed2to1 is None:
+        if owed1to2 == 0:
+            if owed2to1 == 0:
                 error("there is no owed money between these two users")
             log(user2, user1, "payoff", owed2to1 * -1)
             update_balance(user2, user1, 0, false)
-        elif owed1to2 is None:
+        elif owed2to1 == 0: 
             log(user1, user2, "payoff", owed1to2 * -1)
             update_balance(user1, user2, 0, false)
     elif 'owes' in command_split:
