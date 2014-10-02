@@ -512,7 +512,7 @@ if __name__ == '__main__':
         for record_id in command_split[1:]:
             undo(int(record_id))
     elif command_split[0] == 'edit':
-        edit_comment(int(command_split[1]), command_split[3:])
+        edit_comment(int(command_split[1]), ' '.join(command_split[3:]))
     elif command_split[1] == 'paysoff':
         user1 = resolve_prefix(command_split[0])
         user2 = resolve_prefix(command_split[2])
