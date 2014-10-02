@@ -220,9 +220,9 @@ def print_balance():
                 print """<td></td>"""
             else:
                 if username == from_user:
-                    print """<td style='text-align: right;color: #0000FF;'>%.2f</td>""" % from_user_to_to_user
+                    print """<td style='text-align: right;color: #CD0000;'>%.2f</td>""" % from_user_to_to_user
                 elif username == to_user:
-                    print """<td style='text-align: right;color: #800000;'>%.2f</td>""" % from_user_to_to_user
+                    print """<td style='text-align: right;color: #008000;'>%.2f</td>""" % from_user_to_to_user
                 else:
                     print """<td style='text-align: right;'>%.2f</td>""" % from_user_to_to_user
         print """</tr>"""
