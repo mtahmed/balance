@@ -323,7 +323,7 @@ def print_examples():
     <code>undo [LOG_ID]+</code>
     <br />
     <br />
-    <code>edit [LOG_ID] as REASON</code>
+    <code>edit LOG_ID as REASON</code>
     <br />
     <br />
     <code>filter [FIELD=VALUE]+</code>
