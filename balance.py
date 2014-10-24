@@ -317,7 +317,7 @@ def print_examples():
     <code>[USER]+ owes [USER]+ ... [+/-]NUM/EXPR for REASON</code>
     <br />
     <br />
-    <code>[USER] paysoff [USER]</code>
+    <code>USER paysoff USER</code>
     <br />
     <br />
     <code>undo [LOG_ID]+</code>
