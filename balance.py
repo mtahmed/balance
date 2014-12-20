@@ -317,13 +317,13 @@ def print_examples():
     <code>[USER]+ owes [USER]+ ... [+/-]NUM/EXPR for REASON</code>
     <br />
     <br />
-    <code>[USER] paysoff [USER]</code>
+    <code>USER paysoff USER</code>
     <br />
     <br />
     <code>undo [LOG_ID]+</code>
     <br />
     <br />
-    <code>edit [LOG_ID] as REASON</code>
+    <code>edit LOG_ID as REASON</code>
     <br />
     <br />
     <code>filter [FIELD=VALUE]+</code>
@@ -522,10 +522,10 @@ if __name__ == '__main__':
             if owed2to1 == 0:
                 error("there is no owed money between these two users")
             log(user2, user1, "payoff", owed2to1 * -1)
-            update_balance(user2, user1, 0, false)
-        elif owed2to1 == 0: 
+            update_balance(user2, user1, '0', false)
+        elif owed2to1 == 0:
             log(user1, user2, "payoff", owed1to2 * -1)
-            update_balance(user1, user2, 0, false)
+            update_balance(user1, user2, '0', false)
     elif 'owes' in command_split:
         owes_index = command_split.index('owes')
         if command_split[0] == 'all':
