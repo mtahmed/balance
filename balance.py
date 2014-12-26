@@ -131,6 +131,14 @@ def is_balance_free(name):
     return True
 
 
+def is_user_exists(name):
+    '''
+    Determine whether a user exists.
+    '''
+    users = get_all_users()
+    return name in users
+
+
 def get_balance(from_user, to_user):
     '''
     Get the amount PERSON1 owes PERSON2.
@@ -206,6 +214,9 @@ def undo(record_id, delete=False):
     to_user = record[4]
     for_message = "UNDO %d" % record_id
     amount_str = str(-1 * record[6])
+
+    if not is_user_exists(from_user) or not is_user_exists(to_user):
+        raise Exception("One of the given users don't exist. Cannot undo.")
 
     if delete:
         cursor.execute('''DELETE FROM balance_logs where id=%s''', (record_id))
