@@ -54,6 +54,22 @@ def add_user(name):
     return
 
 
+def remove_user(name):
+    '''
+    Remove the user with name NAME from the database.
+    '''
+    users = get_all_users()
+    if name not in users:
+        raise Exception("The user %s is not in the database." % name)
+    # See if there is an existing balance
+    if not is_balance_free(name):
+        raise Exception("The user %s has an outstanding balance." % name)
+    cursor.execute('''DELETE FROM users WHERE name=%s''',
+                   (name,))
+    delete_old_balance(name)
+    return
+
+
 def get_all_users():
     '''
     Get a list of all the users we have in the databse.
@@ -83,6 +99,7 @@ def resolve_prefix(prefix):
     else:
         return matches[0]
 
+
 def create_new_balance(user1, user2):
     '''
     Create an empty record for USER1 to USER2 and the other way.
@@ -92,6 +109,26 @@ def create_new_balance(user1, user2):
     cursor.execute('''INSERT INTO balance VALUES (%s, %s, %s)''',
                    (user2, user1, 0))
     return
+
+
+def delete_old_balance(user):
+    '''
+    Delete an existing record for USER to and from any other user.
+    '''
+    cursor.execute('''DELETE FROM balance WHERE user1=%s OR user2=%s''',
+                   (user, user))
+    return
+
+
+def is_balance_free(name):
+    '''
+    Determine whether a user has no money owed or owing with any other user.
+    '''
+    users = get_all_users()
+    for user in users:
+        if get_balance(name, user) or get_balance(user, name):
+            return False
+    return True
 
 
 def get_balance(from_user, to_user):
@@ -335,6 +372,9 @@ def print_examples():
     <code>delete [LOG_ID]+</code> (admin-only)
     <br />
     <br />
+    <code>remove [USER]+</code> (admin-only)
+    <br />
+    <br />
 
     <h1>Examples</h1>
     szbokhar owes mtahmed $10 more:
@@ -508,6 +548,11 @@ if __name__ == '__main__':
             error("only admin users can delete records")
         for record_id in command_split[1:]:
             undo(int(record_id), delete=True)
+    elif command_split[0] == 'remove':
+        if username not in settings.admin_users:
+            error("only admin users can remove users")
+        for user in command_split[1:]:
+            remove_user(user)
     elif command_split[0] == 'undo':
         for record_id in command_split[1:]:
             undo(int(record_id))
