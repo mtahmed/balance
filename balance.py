@@ -46,7 +46,7 @@ def add_user(name):
     '''
     users = get_all_users()
     if name in users:
-        raise Exception("The user %s is already in the database." % name)
+        raise error("The user %s is already in the database." % name)
     cursor.execute('''INSERT INTO users VALUES (%s)''',
                    (name,))
     for user in users:
@@ -60,10 +60,10 @@ def remove_user(name):
     '''
     users = get_all_users()
     if name not in users:
-        raise Exception("The user %s is not in the database." % name)
+        raise error("The user %s is not in the database." % name)
     # See if there is an existing balance
     if not is_balance_free(name):
-        raise Exception("The user %s has an outstanding balance." % name)
+        raise error("The user %s has an outstanding balance." % name)
     cursor.execute('''DELETE FROM users WHERE name=%s''',
                    (name,))
     delete_old_balance(name)
@@ -223,7 +223,7 @@ def undo(record_id, delete=False):
 
     # Don't undo if a user doesn't exist
     if not is_user_exists(from_user) or not is_user_exists(to_user):
-        raise Exception("One of the given users don't exist. Cannot undo.")
+        raise error("One of the given users don't exist. Cannot undo.")
 
     update_balance(from_user, to_user, for_message, amount_str, log_record)
     return
