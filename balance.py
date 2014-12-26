@@ -215,14 +215,16 @@ def undo(record_id, delete=False):
     for_message = "UNDO %d" % record_id
     amount_str = str(-1 * record[6])
 
-    if not is_user_exists(from_user) or not is_user_exists(to_user):
-        raise Exception("One of the given users don't exist. Cannot undo.")
-
     if delete:
         cursor.execute('''DELETE FROM balance_logs where id=%s''', (record_id))
 
     # If delete, then don't log_record.
     log_record = not delete
+
+    # Don't undo if a user doesn't exist
+    if not is_user_exists(from_user) or not is_user_exists(to_user):
+        raise Exception("One of the given users don't exist. Cannot undo.")
+
     update_balance(from_user, to_user, for_message, amount_str, log_record)
     return
 
