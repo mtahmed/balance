@@ -379,13 +379,13 @@ def print_examples():
     <code>filter [FIELD=VALUE]+</code>
     <br />
     <br />
-    <code>add [USER]+</code> (admin-only)
+    <code>add_user [USER]+</code> (admin-only)
     <br />
     <br />
     <code>delete [LOG_ID]+</code> (admin-only)
     <br />
     <br />
-    <code>remove [USER]+</code> (admin-only)
+    <code>remove_user [USER]+</code> (admin-only)
     <br />
     <br />
 
@@ -550,7 +550,7 @@ if __name__ == '__main__':
         print_balance()
     elif command_split[0] == 'print_logs':
         print_logs()
-    elif command_split[0] == 'add':
+    elif command_split[0] == 'add_user':
         if username not in settings.admin_users:
             error("only admin users can add users.")
         add_list = command_split[1:]
@@ -561,7 +561,7 @@ if __name__ == '__main__':
             error("only admin users can delete records")
         for record_id in command_split[1:]:
             undo(int(record_id), delete=True)
-    elif command_split[0] == 'remove':
+    elif command_split[0] == 'remove_user':
         if username not in settings.admin_users:
             error("only admin users can remove users")
         for user in command_split[1:]:
