@@ -54,7 +54,7 @@ def is_wants_to_be_notified(name):
 
 def change_notify_pref(name):
     '''
-    Alters the user's current notification settings.
+    Toggles the user's notification settings.
     '''
     cursor.execute('''SELECT notify_me FROM users WHERE name=%s''',
                    (name))
@@ -234,6 +234,11 @@ def edit_comment(record_id, new_comment):
 
 def print_balance():
     users = get_all_users()
+
+    if is_wants_to_be_notified(username):
+        print "You currently want to be notified of transactions<br/>"
+    else:
+        print "You currently do not want to be notified of transactions<br/>"
 
     print """<div id='balance-table'>"""
     print """<table>"""
@@ -498,10 +503,6 @@ def print_body_head():
     print "User: %s" % username
     print "<br />"
     print "<br />"
-    if is_wants_to_be_notified(username):
-        print "You currently want to be notified of transactions"
-    else:
-        print "You currently do not want to be notified of transactions"
 
     return
 
