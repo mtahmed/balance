@@ -31,5 +31,6 @@ CREATE TABLE `balance_logs` (
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `name` text
+  `name` text,
+  `notify_me` tinyint(1) DEFAULT 0
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

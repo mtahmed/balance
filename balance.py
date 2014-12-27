@@ -26,6 +26,9 @@ conn = MySQLdb.connect(host = settings.database_hostname,
                        db = settings.database_name)
 cursor = conn.cursor()
 
+mailer = Mailer(username, settings.mail_hostname)
+
+
 def error(msg):
     print "error:", msg
     sys.exit(0)
@@ -40,6 +43,26 @@ def log(from_user, to_user, for_message, amount):
     return
 
 
+def is_wants_to_be_notified(name):
+    '''
+    Checks if the given user wants to be notified of transactions.
+    '''
+    cursor.execute('''SELECT notify_me FROM users WHERE name=%s''',
+                   (name))
+    return cursor.fetchone()
+
+
+def change_notify_pref(name):
+    '''
+    Alters the user's current notification settings.
+    '''
+    cursor.execute('''SELECT notify_me FROM users WHERE name=%s''',
+                   (name))
+    email_setting = 1-cursor.fetchone()
+    cursor.execute('''UPDATE users SET notify_me=%s WHERE name=%s''',
+                   (email_setting, name))
+
+
 def add_user(name):
     '''
     Add the user with name NAME to the database.
@@ -51,6 +74,9 @@ def add_user(name):
                    (name,))
     for user in users:
         create_new_balance(name, user)
+    mailer.sendNotification(name,
+                            'Balance Account Created',
+                            'An account has been created for you on Balance')
     return
 
 
@@ -82,6 +108,7 @@ def resolve_prefix(prefix):
         error("no matches for name: %s" % prefix)
     else:
         return matches[0]
+
 
 def create_new_balance(user1, user2):
     '''
@@ -149,6 +176,17 @@ def update_balance(from_user, to_user, for_message, amount_str, log_record=True)
 
     if log_record:
         log(from_user, to_user, for_message, amount)
+
+        if is_wants_to_be_notified(from_user):
+           mailer.sendNotification(from_user,
+                                'Balance Transaction Notification',
+                                username + " added " + amount + " for you with " \
+                                        + to_user + " for " + for_message)
+        if is_wants_to_notified(to_user):
+           mailer.sendNotification(to_user,
+                                'Balance Transaction Notification',
+                                username + " added " + amount + " to you with " \
+                                        + for_user + " for " + for_message)
     return
 
 
@@ -326,6 +364,9 @@ def print_examples():
     <code>edit LOG_ID as REASON</code>
     <br />
     <br />
+    <code>change_notify</code>
+    <br />
+    <br />
     <code>filter [FIELD=VALUE]+</code>
     <br />
     <br />
@@ -421,6 +462,12 @@ def print_examples():
     <code>edit 3 as pizza</code>
     <br />
     <br />
+    You can change your e-mail notification settings if a mailer is set-up
+    by the administrator by simply running the command.
+    <br />
+    <code>change_notify</code>
+    <br />
+    <br />
     You can filter logs using the filter command and supplying field=value pairs
     where field is one of the headings of the log table. For example if I want
     to see why I owe my4li the amount that I owe him, I can do the following:
@@ -451,6 +498,11 @@ def print_body_head():
     print "User: %s" % username
     print "<br />"
     print "<br />"
+    if is_wants_to_be_notified(username):
+        print "You currently want to be notified of transactions"
+    else:
+        print "You currently do not want to be notified of transactions"
+
     return
 
 
@@ -513,6 +565,8 @@ if __name__ == '__main__':
             undo(int(record_id))
     elif command_split[0] == 'edit':
         edit_comment(int(command_split[1]), ' '.join(command_split[3:]))
+    elif command_split[0] == 'change_notify':
+        change_notify_pref(username):
     elif command_split[1] == 'paysoff':
         user1 = resolve_prefix(command_split[0])
         user2 = resolve_prefix(command_split[2])
