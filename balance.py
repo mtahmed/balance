@@ -75,8 +75,8 @@ def add_user(name):
     users = get_all_users()
     if name in users:
         raise Exception("The user %s is already in the database." % name)
-    cursor.execute('''INSERT INTO users VALUES (%s)''',
-                   (name,))
+    cursor.execute('''INSERT INTO users VALUES (%s, %s)''',
+                   (name, '0'))
     for user in users:
         create_new_balance(name, user)
     mailer.sendNotification(name,
