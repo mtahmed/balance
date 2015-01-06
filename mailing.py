@@ -21,7 +21,7 @@ class Mailer:
 
       receivers = []
       for receiver in toAddr.split(';'):
-         receivers.append("<" + receiver + "@" + host + ">")
+         receivers.append("<" + receiver + "@" + self.host + ">")
 
       message = "From: No Reply Balance <no-reply@balance.com>\n" \
                 "To: " + ';'.join(receivers) + "\n" \
