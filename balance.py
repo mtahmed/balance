@@ -50,7 +50,11 @@ def is_wants_to_be_notified(name):
     '''
     cursor.execute('''SELECT notify_me FROM users WHERE name=%s''',
                    (name))
-    return cursor.fetchone()
+    result = cursor.fetchone()
+    if not result:
+        return False
+    else:
+        return result[0]
 
 
 def change_notify_pref(name):
