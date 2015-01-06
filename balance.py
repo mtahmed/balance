@@ -10,6 +10,7 @@ import cgi
 import cgitb
 import re
 import MySQLdb
+from mailing import Mailer
 
 # Custom imports
 import settings
@@ -236,9 +237,9 @@ def print_balance():
     users = get_all_users()
 
     if is_wants_to_be_notified(username):
-        print "You currently want to be notified of transactions<br/>"
+        print """You currently want to be notified of transactions<br/><br/>"""
     else:
-        print "You currently do not want to be notified of transactions<br/>"
+        print """You currently do not want to be notified of transactions<br/><br/>"""
 
     print """<div id='balance-table'>"""
     print """<table>"""
