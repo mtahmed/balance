@@ -184,14 +184,16 @@ def update_balance(from_user, to_user, for_message, amount_str, log_record=True)
 
         if is_wants_to_be_notified(from_user):
            mailer.sendNotification(from_user,
-                                'Balance Transaction Notification',
-                                username + " added " + amount + " for you with " \
-                                        + to_user + " for " + for_message)
-        if is_wants_to_notified(to_user):
+                                ('Balance Transaction %s Notification' %
+                                   ("Credit" if amount > 0.0 else "Debit")),
+                                ("%s added %s for you with %s for %s" %
+                                   (username, amount, to_user, for_message)))
+        if is_wants_to_be_notified(to_user):
            mailer.sendNotification(to_user,
-                                'Balance Transaction Notification',
-                                username + " added " + amount + " to you with " \
-                                        + for_user + " for " + for_message)
+                                ('Balance Transaction %s Notification' %
+                                   ("Debit" if amount > 0.0 else "Credit")),
+                                ("%s added %s to you with %s for %s" %
+                                   (username, amount, from_user, for_message)))
     return
 
 
