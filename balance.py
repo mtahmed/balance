@@ -126,7 +126,7 @@ def is_balance_free(name):
     '''
     users = get_all_users()
     for user in users:
-        if get_balance(name, user) or get_balance(user, name):
+        if get_balance(name, user) > 0.01 or get_balance(user, name) > 0.01:
             return False
     return True
 
