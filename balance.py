@@ -114,12 +114,6 @@ def update_balance(from_user, to_user, for_message, amount_str, log_record=True)
     if from_user == to_user:
         error("a user cannot owe themself")
 
-    # Just set it to 0 in case someone paid back the whole amount.
-    if amount_str in ('none', '0'):
-        cursor.execute('''UPDATE balance SET amount=0 WHERE from_user=%s AND to_user=%s''',
-                        (from_user, to_user))
-        return
-
     if amount_str == 'none':
         amount = 0
     else:
@@ -136,6 +130,14 @@ def update_balance(from_user, to_user, for_message, amount_str, log_record=True)
         to_user_to_from_user = 0.0
 
     final_amount = amount + from_user_to_to_user - to_user_to_from_user
+
+    # Just set it to 0 in case someone paid back the whole amount.
+    if amount_str in ('none', '0'):
+        cursor.execute('''UPDATE balance SET amount=0 WHERE from_user=%s AND to_user=%s''',
+                           (from_user, to_user))
+        log(from_user, to_user, for_message, -1*final_amount)
+        return
+
     if final_amount > 0.0:
         cursor.execute('''UPDATE balance SET amount=%s WHERE from_user=%s AND to_user=%s''',
                         (0.0, to_user, from_user))
