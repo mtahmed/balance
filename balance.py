@@ -537,6 +537,11 @@ if __name__ == '__main__':
         from_list = [resolve_prefix(prefix) for prefix in from_list]
         to_list = [resolve_prefix(prefix) for prefix in to_list]
 
+        if command_split[0] == 'all':
+           for to_user in to_list:
+              if to_user in from_list:
+                 from_list.remove(to_user)
+
         amount_str = command_split[-1]
         for from_user in from_list:
             for to_user in to_list:
