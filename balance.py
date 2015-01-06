@@ -63,7 +63,7 @@ def change_notify_pref(name):
     '''
     cursor.execute('''SELECT notify_me FROM users WHERE name=%s''',
                    (name))
-    email_setting = 1-cursor.fetchone()
+    email_setting = 1-cursor.fetchone()[0]
     cursor.execute('''UPDATE users SET notify_me=%s WHERE name=%s''',
                    (email_setting, name))
 
@@ -572,7 +572,7 @@ if __name__ == '__main__':
     elif command_split[0] == 'edit':
         edit_comment(int(command_split[1]), ' '.join(command_split[3:]))
     elif command_split[0] == 'change_notify':
-        change_notify_pref(username):
+        change_notify_pref(username)
     elif command_split[1] == 'paysoff':
         user1 = resolve_prefix(command_split[0])
         user2 = resolve_prefix(command_split[2])
