@@ -242,12 +242,13 @@ def edit_comment(record_id, new_comment):
 def print_balance():
     users = get_all_users()
 
+    print """<div id='balance-table'>"""
+
     if is_wants_to_be_notified(username):
         print """You currently want to be notified of transactions<br/><br/>"""
     else:
         print """You currently do not want to be notified of transactions<br/><br/>"""
 
-    print """<div id='balance-table'>"""
     print """<table>"""
     print """<tr>"""
     print """<td style='font-weight: bold; font-size: 20px; text-align: center;'>&#x21b1;</td>"""
